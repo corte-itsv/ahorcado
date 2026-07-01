@@ -56,8 +56,8 @@ def elegirPalabra(listadoPalabras):
     Devuelve una palabra elegida al azar del listado.
     """
     #Sugerencia! ver: https://www.w3schools.com/python/module_random.asp
-
-
+    pal_secret=random.choice(listadoPalabras)
+    return pal_secret
 
 
 def cargarPalabras():
@@ -146,14 +146,14 @@ def ahorcado(palabraSecreta):
 # Cargamos la lista de palabras en la variable 'listadoPalabras'
 # para que esté disponible en todo el programa
 
-# listadoPalabras = cargarPalabras()
+listadoPalabras = cargarPalabras()
 
 # Cuando termines tu función ahorcado, descomentá estas dos líneas para probar
 # (pista: mientras probás, podés elegir vos la palabra secreta)
 
-# palabraSecreta = elegirPalabra(listadoPalabras)
+palabraSecreta = elegirPalabra(listadoPalabras)
 # ahorcado(palabraSecreta)
 
 
-
+print(palabraSecreta)
 
