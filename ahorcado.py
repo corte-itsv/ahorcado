@@ -58,6 +58,8 @@ def elegirPalabra(listadoPalabras):
     #Sugerencia! ver: https://www.w3schools.com/python/module_random.asp
 
 
+
+
 def cargarPalabras():
     """
     Devuelve una lista de palabras válidas. Las palabras son cadenas en minúsculas.
@@ -65,6 +67,9 @@ def cargarPalabras():
     Dependiendo del tamaño de la lista, esta función puede tardar un poco.
     """
     #Sugerencia! ver: https://www.w3schools.com/python/ref_func_open.asp
+    list_palabras = open("palabras.txt", "r")
+    palabras=list_palabras.readlines()
+    return palabras
 
 
 def esPalabraAdivinada(palabraSecreta, letrasMencionadas):
