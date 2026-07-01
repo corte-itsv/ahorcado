@@ -56,6 +56,8 @@ def elegirPalabra(listadoPalabras):
     Devuelve una palabra elegida al azar del listado.
     """
     #Sugerencia! ver: https://www.w3schools.com/python/module_random.asp
+
+
     pal_secret=random.choice(listadoPalabras)
     return pal_secret
 
@@ -99,6 +101,9 @@ def obtenLetrasDisponibles(letrasMencionadas):
     retorna: string, con las letras (a..z) que aún NO se han intentado.
     '''
     # Sugerencia: empezá del alfabeto 'abcdefghijklmnopqrstuvwxyz' y remové las ya usadas.
+    alfabeto="abcdefghijklmnopqrstuvwxyz"
+    letras_disp=alfabeto.replace(letra, "")
+    return letras_disp
 
 
 def obtenerLetra(letrasMencionadas):
@@ -111,8 +116,14 @@ def obtenerLetra(letrasMencionadas):
     letrasMencionadas: list, letras ya intentadas
     retorna: string nueva letra ingresada por el usuario, en minúsculas
     """
-
-
+    while True:
+        letra=input("Escribi una letra: ").lower()
+        if letra in letrasMencionadas:
+            print("la letra ya fue escrita, ingresa una que no haya sido escrita")
+        else:
+            break
+    letrasMencionadas.append(letra)
+    return letrasMencionadas
 def ahorcado(palabraSecreta):
     '''
     palabraSecreta: string, la palabra secreta a adivinar.
@@ -146,14 +157,15 @@ def ahorcado(palabraSecreta):
 # Cargamos la lista de palabras en la variable 'listadoPalabras'
 # para que esté disponible en todo el programa
 
+# listadoPalabras = cargarPalabras()
 listadoPalabras = cargarPalabras()
 
 # Cuando termines tu función ahorcado, descomentá estas dos líneas para probar
 # (pista: mientras probás, podés elegir vos la palabra secreta)
 
+# palabraSecreta = elegirPalabra(listadoPalabras)
 palabraSecreta = elegirPalabra(listadoPalabras)
 # ahorcado(palabraSecreta)
 
 
 print(palabraSecreta)
-
