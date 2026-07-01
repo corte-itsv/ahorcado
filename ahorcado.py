@@ -57,6 +57,9 @@ def elegirPalabra(listadoPalabras):
     """
     #Sugerencia! ver: https://www.w3schools.com/python/module_random.asp
 
+    palabra_elegida = random.choice(listadoPalabras)
+    return palabra_elegida
+
 
 def cargarPalabras():
     """
