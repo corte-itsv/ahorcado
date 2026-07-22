@@ -159,6 +159,29 @@ def ahorcado(palabraSecreta):
     # - Llevá un contador de intentos restantes (inicialmente 8)
     # - En cada vuelta: mostrar letras disponibles, pedir input, validar que sea 1 letra a-z,
     #   manejar repetidos, actualizar estado, y chequear victoria/derrota.
+    print(f"longitud de la palabra secreta: {len(palabraSecreta)}")
+    intentos_rest=8
+    while intentos_rest > 0:
+        if esPalabraAdivinada(palabraSecreta, letrasMencionadas) == False:
+                print(f"Progreso: {obtenPalabraAdivinada(palabraSecreta, letrasMencionadas)}")
+                obtenerLetra(letrasMencionadas)
+                print(f"Letras disponibles: {obtenLetrasDisponibles(letrasMencionadas)}")
+                print("-" * 25)
+                intentos_rest-=1
+                print(f"intentos restantes:{intentos_rest}")
+        else:
+            print(f"Progreso: {obtenPalabraAdivinada(palabraSecreta, letrasMencionadas)}")
+            print("Ganaste")
+
+    print(f"Perdiste, te quedaste sin intentos la palabra era {palabraSecreta}")
+
+
+        
+
+
+       
+    
+
 
 
 
@@ -168,28 +191,12 @@ def ahorcado(palabraSecreta):
 # Cargamos la lista de palabras en la variable 'listadoPalabras'
 # para que esté disponible en todo el programa
 
-# listadoPalabras = cargarPalabras()
-listadoPalabras = cargarPalabras()
-
 # Cuando termines tu función ahorcado, descomentá estas dos líneas para probar
 # (pista: mientras probás, podés elegir vos la palabra secreta)
-
-palabraSecreta = elegirPalabra(listadoPalabras)
-# ahorcado(palabraSecreta)
+letrasMencionadas = []
 listadoPalabras = cargarPalabras()
 palabraSecreta = elegirPalabra(listadoPalabras)
+ahorcado(palabraSecreta)
 
-print(f"Palabra secreta (machete): {palabraSecreta}")
-letrasMencionadas = []
 
-while True:
-    if esPalabraAdivinada(palabraSecreta, letrasMencionadas) == False:
-        print(f"Progreso: {obtenPalabraAdivinada(palabraSecreta, letrasMencionadas)}")
-        obtenerLetra(letrasMencionadas)
-        print(f"Letras disponibles: {obtenLetrasDisponibles(letrasMencionadas)}")
-        print("-" * 25)
-    else:
-        break
 
-print(f"Progreso final: {obtenPalabraAdivinada(palabraSecreta, letrasMencionadas)}")
-print("ganaste brooooo")
