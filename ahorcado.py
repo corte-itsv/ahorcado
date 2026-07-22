@@ -48,7 +48,18 @@
 
 import random
 
-
+def normalizar(texto):
+    reemplazos = {
+        'á': 'a',
+        'é': 'e',
+        'í': 'i',
+        'ó': 'o',
+        'ú': 'u',
+        'ü': 'u',
+    }
+    for original, simple in reemplazos.items():
+        texto=texto.replace(original, simple)
+    return texto
 def elegirPalabra(listadoPalabras):
     """
     listadoPalabras (list): lista de palabras (strings)
@@ -198,7 +209,7 @@ def ahorcado(palabraSecreta):
 # (pista: mientras probás, podés elegir vos la palabra secreta)
 letrasMencionadas = []
 listadoPalabras = cargarPalabras()
-palabraSecreta = elegirPalabra(listadoPalabras)
+palabraSecreta = normalizar(elegirPalabra(listadoPalabras))
 ahorcado(palabraSecreta)
 
 
