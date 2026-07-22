@@ -100,11 +100,8 @@ def obtenPalabraAdivinada(palabraSecreta, letrasMencionadas):
     '''
     # Sugerencia: construí un string acumulando letra o '_' según corresponda.
 
-    estado="_ "*len(palabraSecreta)
-    for letra in palabraSecreta:
-        if letra in letrasMencionadas:
-            estado.replace("_ ", letra)
-    return estado
+    estado = [letra if letra in letrasMencionadas else "_" for letra in palabraSecreta]
+    return " ".join(estado)
 
 
 def obtenLetrasDisponibles(letrasMencionadas):
