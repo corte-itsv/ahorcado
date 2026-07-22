@@ -166,7 +166,29 @@ def ahorcado(palabraSecreta):
     # - Llevá un contador de intentos restantes (inicialmente 8)
     # - En cada vuelta: mostrar letras disponibles, pedir input, validar que sea 1 letra a-z,
     #   manejar repetidos, actualizar estado, y chequear victoria/derrota.
+    letrasMencionadas = []
+    print(f"longitud de la palabra secreta: {len(palabraSecreta)}")
+    intentos_rest=8
+    while intentos_rest > 0:
+        if esPalabraAdivinada(palabraSecreta, letrasMencionadas) == False:
+                print(f"Progreso: {obtenPalabraAdivinada(palabraSecreta, letrasMencionadas)}")
+                letra = obtenerLetra(letrasMencionadas)
+                if letra not in palabraSecreta:
+                    intentos_rest -=1
+                    print(f"La letra {letra} no esta en la palabra")
+                else:
+                    print(f"Bien, la letra {letra} esta en la palabra")
+                    
+                print(f"Letras disponibles: {obtenLetrasDisponibles(letrasMencionadas)}")
+                print("-" * 25)
+                print(f"intentos restantes: {intentos_rest}")
+        else:
+            print(f"Progreso: {obtenPalabraAdivinada(palabraSecreta, letrasMencionadas)}")
+            print("Ganaste🏆")
+            break
 
+    if intentos_rest <= 0:
+        print(f"Perdiste😢, te quedaste sin intentos la palabra era {palabraSecreta}")
 
 
 
