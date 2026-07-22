@@ -121,7 +121,7 @@ def obtenLetrasDisponibles(letrasMencionadas):
     retorna: string, con las letras (a..z) que aún NO se han intentado.
     '''
     # Sugerencia: empezá del alfabeto 'abcdefghijklmnopqrstuvwxyz' y remové las ya usadas.
-    letras_disp = "abcdefghijklmnopqrstuvwxyz"
+    letras_disp = "abcdefghijklmnñopqrstuvwxyz"
     for i in range(len(letrasMencionadas)):
         letras_disp = letras_disp.replace(letrasMencionadas[i], "")
     return letras_disp
@@ -138,14 +138,17 @@ def obtenerLetra(letrasMencionadas):
     retorna: string nueva letra ingresada por el usuario, en minúsculas
     """
     while True:
-        letra=input("Escribi una letra: ").lower()
-        if letra in letrasMencionadas:
-            print("la letra ya fue escrita, ingresa una que no haya sido escrita")
+        letra = input("Escribí una letra: ").lower()
+        letra = normalizar(letra)
+        if len(letra) != 1 or not letra.isalpha():
+            print("Por favor, ingresá una sola letra válida.")
+        elif letra in letrasMencionadas:
+            print("La letra ya fue ingresada, intentá con otra.")
         else:
             break
     letrasMencionadas.append(letra)
     return letra
-
+    
 def ahorcado(palabraSecreta):
     '''
     palabraSecreta: string, la palabra secreta a adivinar.
@@ -170,24 +173,30 @@ def ahorcado(palabraSecreta):
     # - Llevá un contador de intentos restantes (inicialmente 8)
     # - En cada vuelta: mostrar letras disponibles, pedir input, validar que sea 1 letra a-z,
     #   manejar repetidos, actualizar estado, y chequear victoria/derrota.
+    letrasMencionadas = []
     print(f"longitud de la palabra secreta: {len(palabraSecreta)}")
     intentos_rest=8
+    print(palabraSecreta)
     while intentos_rest > 0:
         if esPalabraAdivinada(palabraSecreta, letrasMencionadas) == False:
                 print(f"Progreso: {obtenPalabraAdivinada(palabraSecreta, letrasMencionadas)}")
-                if obtenerLetra(letrasMencionadas) not in palabraSecreta:
+                letra = obtenerLetra(letrasMencionadas)
+                if letra not in palabraSecreta:
                     intentos_rest -=1
-                
+                    print(f"La letra {letra} no esta en la palabra")
+                else:
+                    print(f"Bien, la letra {letra} esta en la palabra")
+                    
                 print(f"Letras disponibles: {obtenLetrasDisponibles(letrasMencionadas)}")
                 print("-" * 25)
-                print(f"intentos restantes:{intentos_rest}")
+                print(f"intentos restantes: {intentos_rest}")
         else:
             print(f"Progreso: {obtenPalabraAdivinada(palabraSecreta, letrasMencionadas)}")
-            print("Ganaste")
+            print("Ganaste🏆")
             break
 
     if intentos_rest <= 0:
-        print(f"Perdiste, te quedaste sin intentos la palabra era {palabraSecreta}")
+        print(f"Perdiste😢, te quedaste sin intentos la palabra era {palabraSecreta}")
 
 
         
@@ -207,7 +216,7 @@ def ahorcado(palabraSecreta):
 
 # Cuando termines tu función ahorcado, descomentá estas dos líneas para probar
 # (pista: mientras probás, podés elegir vos la palabra secreta)
-letrasMencionadas = []
+
 listadoPalabras = cargarPalabras()
 palabraSecreta = normalizar(elegirPalabra(listadoPalabras))
 ahorcado(palabraSecreta)
