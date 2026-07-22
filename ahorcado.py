@@ -78,7 +78,10 @@ def cargarPalabras():
     Dependiendo del tamaño de la lista, esta función puede tardar un poco.
     """
     #Sugerencia! ver: https://www.w3schools.com/python/ref_func_open.asp
-
+    lista_palabras = open("palabras.txt", "r")
+    palabras = lista_palabras.read().split()
+    lista_palabras.close()
+    return palabras
 
 def esPalabraAdivinada(palabraSecreta, letrasMencionadas):
     '''
