@@ -70,6 +70,8 @@ def cargarPalabras():
     #Sugerencia! ver: https://www.w3schools.com/python/ref_func_open.asp
 
 
+
+
 def esPalabraAdivinada(palabraSecreta, letrasMencionadas):
     '''
     palabraSecreta: string, la palabra que el usuario intenta adivinar
@@ -77,6 +79,11 @@ def esPalabraAdivinada(palabraSecreta, letrasMencionadas):
     retorna: booleano, True si todas las letras de palabraSecreta están en letrasMencionadas;
              False en caso contrario
     '''
+    for letra in palabraSecreta:
+        if letra in letrasMencionadas:
+            return True
+        else:
+            return False
 
 
 def obtenPalabraAdivinada(palabraSecreta, letrasMencionadas):
@@ -88,6 +95,16 @@ def obtenPalabraAdivinada(palabraSecreta, letrasMencionadas):
              Ej.: 'a_ _ le' para 'apple' si solo se adivinó 'a' y 'l' y 'e'.
     '''
     # Sugerencia: construí un string acumulando letra o '_' según corresponda.
+    
+    palabra = ""
+    for letra in palabraSecreta:
+        if letra in letrasMencionadas:
+            palabra = palabra + letra
+        else:
+            palabra = palabra + "_"
+    return palabra
+
+
 
 
 
@@ -97,6 +114,18 @@ def obtenLetrasDisponibles(letrasMencionadas):
     retorna: string, con las letras (a..z) que aún NO se han intentado.
     '''
     # Sugerencia: empezá del alfabeto 'abcdefghijklmnopqrstuvwxyz' y remové las ya usadas.
+    
+    alfabeto = 'abcdefghijklmnopqrstuvwxyz'
+    resultado = ""
+
+    for letra in letrasMencionadas:
+        if letra not in resultado and letra in alfabeto:
+            resultado = resultado + letra
+    return resultado
+
+
+
+
 
 
 def obtenerLetra(letrasMencionadas):
@@ -108,7 +137,17 @@ def obtenerLetra(letrasMencionadas):
 
     letrasMencionadas: list, letras ya intentadas
     retorna: string nueva letra ingresada por el usuario, en minúsculas
+
     """
+    alfabeto = "abcdefghijklmnñopqrstuvwxyz"
+    letraIngresada = input('Ingrese una letra: ')
+    if len(letraIngresada) != 1:
+        print('Tiene que ser una letra')
+    for letra in letrasMencionadas:
+        if letra == letraIngresada:
+            print('Ya ingresaste esa letra')
+    return letraIngresada
+    
 
 
 def ahorcado(palabraSecreta):
@@ -135,6 +174,11 @@ def ahorcado(palabraSecreta):
     # - Llevá un contador de intentos restantes (inicialmente 8)
     # - En cada vuelta: mostrar letras disponibles, pedir input, validar que sea 1 letra a-z,
     #   manejar repetidos, actualizar estado, y chequear victoria/derrota.
+
+    print('Bienvenido al juego del ahorcado')
+    print(f'La palabra tiene {len(palabraSecreta)} letras')
+    intentos = 8
+    
 
 
 
