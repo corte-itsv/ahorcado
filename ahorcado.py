@@ -115,7 +115,10 @@ def obtenLetrasDisponibles(letrasMencionadas):
     retorna: string, con las letras (a..z) que aún NO se han intentado.
     '''
     # Sugerencia: empezá del alfabeto 'abcdefghijklmnopqrstuvwxyz' y remové las ya usadas.
-
+    letras_disp = "abcdefghijklmnñopqrstuvwxyz"
+    for i in range(len(letrasMencionadas)):
+        letras_disp = letras_disp.replace(letrasMencionadas[i], "")
+    return letras_disp
 
 def obtenerLetra(letrasMencionadas):
     """
