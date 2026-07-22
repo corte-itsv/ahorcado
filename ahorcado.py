@@ -48,6 +48,18 @@
 
 import random
 
+def normalizar(texto):
+    reemplazos = {
+        'á': 'a',
+        'é': 'e',
+        'í': 'i',
+        'ó': 'o',
+        'ú': 'u',
+        'ü': 'u',
+    }
+    for original, simple in reemplazos.items():
+        texto=texto.replace(original, simple)
+    return texto
 
 def elegirPalabra(listadoPalabras):
     """
