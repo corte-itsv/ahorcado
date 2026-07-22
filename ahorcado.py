@@ -236,11 +236,7 @@ def ahorcado(palabraSecreta):
 
     print("Perdiste.")
     print(f"La palabra era: {palabraSecreta}")
-
-            
-                
-            
-        
+      
 
 listadoPalabras = cargarPalabras()
 palabraSecreta = elegirPalabra(listadoPalabras)
