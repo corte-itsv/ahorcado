@@ -176,7 +176,6 @@ def ahorcado(palabraSecreta):
     letrasMencionadas = []
     print(f"longitud de la palabra secreta: {len(palabraSecreta)}")
     intentos_rest=8
-    print(palabraSecreta)
     while intentos_rest > 0:
         if esPalabraAdivinada(palabraSecreta, letrasMencionadas) == False:
                 print(f"Progreso: {obtenPalabraAdivinada(palabraSecreta, letrasMencionadas)}")
