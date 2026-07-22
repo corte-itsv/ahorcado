@@ -1,154 +1,106 @@
-#   Hangman / Ahorcado
-#
-#
-#   En este problema vas a programar una variación del clásico juego Ahorcado. Si no
-#   conoces las reglas, podes leer sobre ellas fácilmente. En nuestro caso, el segundo
-#   jugador siempre será la computadora, que elegirá una palabra al azar.
-#
-#   Vas a implementar una función llamada ahorcado (hangman en inglés) que inicia y
-#   lleva adelante un juego interactivo de Ahorcado entre un jugador y la computadora.
-#   Antes de llegar a esa función, implementaremos algunas funciones auxiliares para
-#   ponerte en marcha.
-#
-#   Para este ejercicio necesitas los archivos ps3_ahorcado.py y palabras.txt, los cuales
-#   podes descargar desde el classroom. Asegúrate de guardarlos en el mismo directorio
-#   donde vas a trabajar.
-#
-#   Requisitos:
-#       • La computadora debe seleccionar al azar una palabra de la lista cargada
-#         desde palabras.txt.
-#       • El juego debe ser interactivo y fluir así:
-#           - Al comenzar, indica al usuario cuántas letras tiene la palabra.
-#           - Pide una única letra por ronda.
-#           - Inmediatamente después de cada intento, informa si la letra está o no
-#             en la palabra.
-#           - Tras cada ronda, muestra el avance parcial (con guiones bajos en las
-#             letras no descubiertas) y las letras no usadas aún.
-#       • Reglas adicionales:
-#           - El usuario dispone de 8 intentos. Recuérdale cuántos le quedan
-#             después de cada ronda.
-#           - Solo se pierde un intento cuando la letra no está en la palabra.
-#           - Si el usuario repite una letra, no le quites un intento; en su lugar,
-#             avísale y pídele otra.
-#           - El juego termina cuando el usuario adivina toda la palabra o se queda
-#             sin intentos. Si pierde, revela la palabra al final.
-#       • Consideraciones:
-#           - Las letras disponibles deben ser: 'abcdefghijklmnñopqrstuvwxyz'
-#           - El programa no debe diferenciar entre minúsculas y mayúsculas, es decir,
-#             es lo mismo si el usuario ingresa 'U' o 'u'
-#           - Los caracetes especiales en las palabras en juego, como: á é í ó ú ü, deben
-#             ser consideradas como correctas cuando el usuario ingresa su caracter base,
-#             es decir, si hay una 'ü' en la palabra a adivinar, y el usuario ingresa 'u',
-#             debe considerarse como correcto.
-#       • Extra:
-#           - En lugar, o en complemento, de mostrar la cantidad de vidas restantes, dibujá
-#             el típico ahorcado a medida que el usuario vaya perdiendo vidas.
-#
+# Hangman / Ahorcado
+"""Juego interactivo de ahorcado en español."""
 
-
+from pathlib import Path
 import random
 
 
-def elegirPalabra(listadoPalabras):
-    """
-    listadoPalabras (list): lista de palabras (strings)
+ALFABETO = "abcdefghijklmnñopqrstuvwxyz"
+# Las letras acentuadas se adivinan con su letra base.
+EQUIVALENCIAS = str.maketrans({
+    "á": "a", "é": "e", "í": "i", "ó": "o", "ú": "u", "ü": "u",
+})
 
-    Devuelve una palabra elegida al azar del listado.
-    """
-    #Sugerencia! ver: https://www.w3schools.com/python/module_random.asp
+
+def normalizarLetra(letra):
+    """Pasa una letra a minúscula y elimina los acentos relevantes."""
+    return letra.lower().translate(EQUIVALENCIAS)
+
+
+def elegirPalabra(listadoPalabras):
+    """Devuelve una palabra elegida al azar de ``listadoPalabras``."""
+    if not listadoPalabras:
+        raise ValueError("El listado de palabras no puede estar vacío.")
+    return random.choice(listadoPalabras)
 
 
 def cargarPalabras():
-    """
-    Devuelve una lista de palabras válidas. Las palabras son cadenas en minúsculas.
+    """Carga desde palabras.txt las palabras que pueden jugarse."""
+    ruta = Path(__file__).with_name("palabras.txt")
+    with ruta.open(encoding="utf-8") as archivo:
+        palabras = [linea.strip().lower() for linea in archivo]
 
-    Dependiendo del tamaño de la lista, esta función puede tardar un poco.
-    """
-    #Sugerencia! ver: https://www.w3schools.com/python/ref_func_open.asp
+    # Se descartan entradas con espacios o signos: no se pueden adivinar letra a letra.
+    return [palabra for palabra in palabras
+            if palabra and all(normalizarLetra(letra) in ALFABETO for letra in palabra)]
 
 
 def esPalabraAdivinada(palabraSecreta, letrasMencionadas):
-    '''
-    palabraSecreta: string, la palabra que el usuario intenta adivinar
-    letrasMencionadas: list, letras que ya fueron intentadas
-    retorna: booleano, True si todas las letras de palabraSecreta están en letrasMencionadas;
-             False en caso contrario
-    '''
+    """Retorna True si todas las letras de la palabra ya fueron adivinadas."""
+    letras = set(letrasMencionadas)
+    return all(normalizarLetra(letra) in letras for letra in palabraSecreta)
 
 
 def obtenPalabraAdivinada(palabraSecreta, letrasMencionadas):
-    '''
-    palabraSecreta: string, la palabra que el usuario intenta adivinar
-    letrasMencionadas: list, letras que ya fueron intentadas
-    retorna: string, con letras y guiones bajos que representan
-             el estado parcial de la palabra adivinada hasta ahora.
-             Ej.: 'a_ _ le' para 'apple' si solo se adivinó 'a' y 'l' y 'e'.
-    '''
-    # Sugerencia: construí un string acumulando letra o '_' según corresponda.
-
+    """Muestra las letras acertadas y guiones bajos para las restantes."""
+    letras = set(letrasMencionadas)
+    return " ".join(
+        letra if normalizarLetra(letra) in letras else "_"
+        for letra in palabraSecreta
+    )
 
 
 def obtenLetrasDisponibles(letrasMencionadas):
-    '''
-    letrasMencionadas: list, letras ya intentadas
-    retorna: string, con las letras (a..z) que aún NO se han intentado.
-    '''
-    # Sugerencia: empezá del alfabeto 'abcdefghijklmnopqrstuvwxyz' y remové las ya usadas.
+    """Retorna las letras del alfabeto que todavía no se intentaron."""
+    letras = set(letrasMencionadas)
+    return "".join(letra for letra in ALFABETO if letra not in letras)
 
 
 def obtenerLetra(letrasMencionadas):
-    """
-    Pide al usuario ingresar una nueva letra.
-    No distingue minúsculas de mayúsculas.
-    Valida que la letra no haya sido ingresada previamente.
-    letras válidas: abcdefghijklmnñopqrstuvwxyz
+    """Pide y valida una letra nueva, y la devuelve en minúscula."""
+    while True:
+        letra = normalizarLetra(input("Ingresá una letra: ").strip())
 
-    letrasMencionadas: list, letras ya intentadas
-    retorna: string nueva letra ingresada por el usuario, en minúsculas
-    """
+        if len(letra) != 1 or letra not in ALFABETO:
+            print("Ingresá una única letra válida.")
+        elif letra in letrasMencionadas:
+            print("Ya ingresaste esa letra. Probá con otra.")
+        else:
+            return letra
 
 
 def ahorcado(palabraSecreta):
-    '''
-    palabraSecreta: string, la palabra secreta a adivinar.
+    """Inicia una partida de ahorcado con ocho intentos incorrectos."""
+    palabraSecreta = palabraSecreta.lower()
+    letrasMencionadas = []
+    intentosRestantes = 8
 
-    Inicia un juego interactivo de Ahorcado.
+    print("¡Bienvenido al juego Ahorcado!")
+    print(f"La palabra secreta tiene {len(palabraSecreta)} letras.")
 
-    * Al inicio, informá cuántas letras tiene palabraSecreta.
+    while intentosRestantes > 0 and not esPalabraAdivinada(
+        palabraSecreta, letrasMencionadas
+    ):
+        print(f"\nTe quedan {intentosRestantes} intentos.")
+        print("Letras disponibles:", obtenLetrasDisponibles(letrasMencionadas))
+        print("Palabra:", obtenPalabraAdivinada(palabraSecreta, letrasMencionadas))
 
-    * Pedí al usuario una sola letra por ronda.
+        letra = obtenerLetra(letrasMencionadas)
+        letrasMencionadas.append(letra)
 
-    * Informá inmediatamente si su letra aparece o no en la palabra.
+        if letra in (normalizarLetra(caracter) for caracter in palabraSecreta):
+            print("¡Bien! La letra está en la palabra.")
+        else:
+            intentosRestantes -= 1
+            print("Esa letra no está en la palabra.")
 
-    * Tras cada ronda, mostrale el estado parcial de la palabra,
-      y también las letras que aún no ha usado.
-
-    Seguí las demás limitaciones descriptas en el enunciado (8 intentos, no
-    descontar por letras repetidas, terminar al adivinar toda la palabra o al
-    quedarse sin intentos; si pierde, mostrar la palabra).
-    '''
-    # Sugerencias:
-    # - Usá un conjunto/lista para letrasMencionadas
-    # - Llevá un contador de intentos restantes (inicialmente 8)
-    # - En cada vuelta: mostrar letras disponibles, pedir input, validar que sea 1 letra a-z,
-    #   manejar repetidos, actualizar estado, y chequear victoria/derrota.
-
-
-
-
-# Descomentar al completar las funciones:
-
-# Cargamos la lista de palabras en la variable 'listadoPalabras'
-# para que esté disponible en todo el programa
-
-# listadoPalabras = cargarPalabras()
-
-# Cuando termines tu función ahorcado, descomentá estas dos líneas para probar
-# (pista: mientras probás, podés elegir vos la palabra secreta)
-
-# palabraSecreta = elegirPalabra(listadoPalabras)
-# ahorcado(palabraSecreta)
+    if esPalabraAdivinada(palabraSecreta, letrasMencionadas):
+        print("\n¡Felicitaciones! Adivinaste la palabra:", palabraSecreta)
+    else:
+        print("\nSe terminaron los intentos. La palabra era:", palabraSecreta)
 
 
-
-
+if __name__ == "__main__":
+    listadoPalabras = cargarPalabras()
+    palabraSecreta = elegirPalabra(listadoPalabras)
+    ahorcado(palabraSecreta)
