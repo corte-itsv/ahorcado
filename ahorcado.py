@@ -105,7 +105,8 @@ def obtenPalabraAdivinada(palabraSecreta, letrasMencionadas):
              Ej.: 'a_ _ le' para 'apple' si solo se adivinó 'a' y 'l' y 'e'.
     '''
     # Sugerencia: construí un string acumulando letra o '_' según corresponda.
-
+    estado = [letra if letra in letrasMencionadas else "_" for letra in palabraSecreta]
+    return " ".join(estado)
 
 
 def obtenLetrasDisponibles(letrasMencionadas):
