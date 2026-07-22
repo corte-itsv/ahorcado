@@ -90,7 +90,11 @@ def esPalabraAdivinada(palabraSecreta, letrasMencionadas):
     retorna: booleano, True si todas las letras de palabraSecreta están en letrasMencionadas;
              False en caso contrario
     '''
+    for letra in palabraSecreta:
+        if letra not in letrasMencionadas:
+            return False
 
+    return True
 
 def obtenPalabraAdivinada(palabraSecreta, letrasMencionadas):
     '''
