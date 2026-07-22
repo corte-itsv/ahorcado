@@ -164,16 +164,19 @@ def ahorcado(palabraSecreta):
     while intentos_rest > 0:
         if esPalabraAdivinada(palabraSecreta, letrasMencionadas) == False:
                 print(f"Progreso: {obtenPalabraAdivinada(palabraSecreta, letrasMencionadas)}")
-                obtenerLetra(letrasMencionadas)
+                if obtenerLetra(letrasMencionadas) not in palabraSecreta:
+                    intentos_rest -=1
+                
                 print(f"Letras disponibles: {obtenLetrasDisponibles(letrasMencionadas)}")
                 print("-" * 25)
-                intentos_rest-=1
                 print(f"intentos restantes:{intentos_rest}")
         else:
             print(f"Progreso: {obtenPalabraAdivinada(palabraSecreta, letrasMencionadas)}")
             print("Ganaste")
+            break
 
-    print(f"Perdiste, te quedaste sin intentos la palabra era {palabraSecreta}")
+    if intentos_rest <= 0:
+        print(f"Perdiste, te quedaste sin intentos la palabra era {palabraSecreta}")
 
 
         
