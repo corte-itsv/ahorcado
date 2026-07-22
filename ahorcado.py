@@ -197,13 +197,13 @@ def ahorcado(palabraSecreta):
 # Cargamos la lista de palabras en la variable 'listadoPalabras'
 # para que esté disponible en todo el programa
 
-# listadoPalabras = cargarPalabras()
+listadoPalabras = cargarPalabras()
 
 # Cuando termines tu función ahorcado, descomentá estas dos líneas para probar
 # (pista: mientras probás, podés elegir vos la palabra secreta)
 
-# palabraSecreta = elegirPalabra(listadoPalabras)
-# ahorcado(palabraSecreta)
+palabraSecreta = elegirPalabra(listadoPalabras)
+ahorcado(palabraSecreta)
 
 
 
