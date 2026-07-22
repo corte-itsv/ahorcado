@@ -130,7 +130,17 @@ def obtenerLetra(letrasMencionadas):
     letrasMencionadas: list, letras ya intentadas
     retorna: string nueva letra ingresada por el usuario, en minúsculas
     """
-
+    while True:
+        letra = input("Escribí una letra: ").lower()
+        letra = normalizar(letra)
+        if len(letra) != 1 or not letra.isalpha():
+            print("Por favor, ingresá una sola letra válida.")
+        elif letra in letrasMencionadas:
+            print("La letra ya fue ingresada, intentá con otra.")
+        else:
+            break
+    letrasMencionadas.append(letra)
+    return letra
 
 def ahorcado(palabraSecreta):
     '''
