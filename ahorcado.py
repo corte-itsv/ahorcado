@@ -51,10 +51,10 @@ import random
 def simplificar(txt):
     simplificaciones = {
         "á": "a",
-        "é": "a",
-        "í": "a",
-        "ó": "a",
-        "ú": "a"
+        "é": "e",
+        "í": "i",
+        "ó": "o",
+        "ú": "u"
     }
     for og, simp in simplificaciones.items():
         txt=txt.replace(og, simp)
