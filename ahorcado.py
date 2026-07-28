@@ -186,15 +186,15 @@ def ahorcado(palabraSecreta):
                 intentos = intentos - 1
             print(f"Intentos restantes: {intentos}")
         else:
-            print(f"Te quedaste sin intentos. La palabra era '{palabraSecreta}'.")
             break
-
-        
-            
+ 
         obtenLetrasDisponibles(letrasMencionadas)
         obtenPalabraAdivinada(palabraSecreta, letrasMencionadas)
 
-    print(f"Ganaste. La palabra es {palabraSecreta}.")
+    if esPalabraAdivinada(palabraSecreta, letrasMencionadas):
+        print(f"¡Ganaste! La palabra es '{palabraSecreta}'!")
+    else:
+        print(f"Te quedaste sin intentos. La palabra era '{palabraSecreta}'.")
 
         
         
