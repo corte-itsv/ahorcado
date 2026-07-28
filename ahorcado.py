@@ -57,6 +57,7 @@ def elegirPalabra(listadoPalabras):
     """
     #Sugerencia! ver: https://www.w3schools.com/python/module_random.asp
 
+    return random.choice(listadoPalabras)
 
 def cargarPalabras():
     """
@@ -66,6 +67,9 @@ def cargarPalabras():
     """
     #Sugerencia! ver: https://www.w3schools.com/python/ref_func_open.asp
 
+    archivo = open("palabras.txt", "r", encoding="utf-8")
+    palabras = archivo.read().split()
+    return palabras
 
 def esPalabraAdivinada(palabraSecreta, letrasMencionadas):
     '''
