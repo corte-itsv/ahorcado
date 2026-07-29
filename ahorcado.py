@@ -48,85 +48,144 @@
 
 import random
 
+def normalizar(letra):
+    letra = letra.lower()
+    cambios = {
+        "á": "a",
+        "é": "e",
+        "í": "i",
+        "ó": "o",
+        "ú": "u",
+        "ü": "u"
+    }
+    if letra in cambios:
+        return cambios[letra]
+    return letra
+
 
 def elegirPalabra(listadoPalabras):
-    """
-    listadoPalabras (list): lista de palabras (strings)
-
-    Devuelve una palabra elegida al azar del listado.
-    """
-    #Sugerencia! ver: https://www.w3schools.com/python/module_random.asp
+    return random.choice(listadoPalabras)
 
 
 def cargarPalabras():
-    """
-    Devuelve una lista de palabras válidas. Las palabras son cadenas en minúsculas.
-
-    Dependiendo del tamaño de la lista, esta función puede tardar un poco.
-    """
-    #Sugerencia! ver: https://www.w3schools.com/python/ref_func_open.asp
+    archivo = open("palabras.txt", "r", encoding="utf-8")
+    palabras = archivo.read().split()
+    archivo.close()
+    return palabras
 
 
 def esPalabraAdivinada(palabraSecreta, letrasMencionadas):
-    '''
-    palabraSecreta: string, la palabra que el usuario intenta adivinar
-    letrasMencionadas: list, letras que ya fueron intentadas
-    retorna: booleano, True si todas las letras de palabraSecreta están en letrasMencionadas;
-             False en caso contrario
-    '''
+
+    for letra in palabraSecreta:
+        if normalizar(letra) not in letrasMencionadas:
+            return False
+
+    return True
 
 
 def obtenPalabraAdivinada(palabraSecreta, letrasMencionadas):
-    '''
-    palabraSecreta: string, la palabra que el usuario intenta adivinar
-    letrasMencionadas: list, letras que ya fueron intentadas
-    retorna: string, con letras y guiones bajos que representan
-             el estado parcial de la palabra adivinada hasta ahora.
-             Ej.: 'a_ _ le' para 'apple' si solo se adivinó 'a' y 'l' y 'e'.
-    '''
-    # Sugerencia: construí un string acumulando letra o '_' según corresponda.
 
+    resultado = ""
+
+    for letra in palabraSecreta:
+        if normalizar(letra) in letrasMencionadas:
+            resultado += letra + " "
+        else:
+            resultado += "_ "
+
+    return resultado
 
 
 def obtenLetrasDisponibles(letrasMencionadas):
-    '''
-    letrasMencionadas: list, letras ya intentadas
-    retorna: string, con las letras (a..z) que aún NO se han intentado.
-    '''
-    # Sugerencia: empezá del alfabeto 'abcdefghijklmnopqrstuvwxyz' y remové las ya usadas.
+
+    abecedario = "abcdefghijklmnñopqrstuvwxyz"
+    disponibles = ""
+
+    for letra in abecedario:
+        if letra not in letrasMencionadas:
+            disponibles += letra
+
+    return disponibles
 
 
 def obtenerLetra(letrasMencionadas):
-    """
-    Pide al usuario ingresar una nueva letra.
-    No distingue minúsculas de mayúsculas.
-    Valida que la letra no haya sido ingresada previamente.
-    letras válidas: abcdefghijklmnñopqrstuvwxyz
 
-    letrasMencionadas: list, letras ya intentadas
-    retorna: string nueva letra ingresada por el usuario, en minúsculas
-    """
+    while True:
+
+        letra = input("Ingrese una letra: ").lower()
+        letra = normalizar(letra)
+
+        if len(letra) != 1:
+            print("Ingrese solo una letra.")
+
+        elif letra not in "abcdefghijklmnñopqrstuvwxyz":
+            print("Ingrese una letra válida.")
+
+        elif letra in letrasMencionadas:
+            print("Esa letra ya fue utilizada.")
+
+        else:
+            return letra
 
 
 def ahorcado(palabraSecreta):
-    '''
-    palabraSecreta: string, la palabra secreta a adivinar.
 
-    Inicia un juego interactivo de Ahorcado.
+    intentos = 8
+    letrasMencionadas = []
 
-    * Al inicio, informá cuántas letras tiene palabraSecreta.
+    print("¡Bienvenido al Ahorcado!")
+    print("La palabra tiene", len(palabraSecreta), "letras.")
 
-    * Pedí al usuario una sola letra por ronda.
+    while intentos > 0:
 
-    * Informá inmediatamente si su letra aparece o no en la palabra.
+        print("\n----------------------------")
+        print("Intentos restantes:", intentos)
+        print("Letras disponibles:", obtenLetrasDisponibles(letrasMencionadas))
+        print("Palabra:", obtenPalabraAdivinada(palabraSecreta, letrasMencionadas))
 
-    * Tras cada ronda, mostrale el estado parcial de la palabra,
-      y también las letras que aún no ha usado.
+        letra = obtenerLetra(letrasMencionadas)
 
-    Seguí las demás limitaciones descriptas en el enunciado (8 intentos, no
-    descontar por letras repetidas, terminar al adivinar toda la palabra o al
-    quedarse sin intentos; si pierde, mostrar la palabra).
-    '''
+        letrasMencionadas.append(letra)
+
+        encontrada = False
+
+        for l in palabraSecreta:
+            if normalizar(l) == letra:
+                encontrada = True
+                break
+
+        if encontrada:
+            print("¡Correcto! La letra está en la palabra.")
+        else:
+            print("Incorrecto. La letra no está.")
+            intentos -= 1
+
+        if esPalabraAdivinada(palabraSecreta, letrasMencionadas):
+            print("\n¡¡Felicitaciones!!")
+            print("Adivinaste la palabra:", palabraSecreta)
+            return
+
+    print("\nPerdiste.")
+    print("La palabra era:", palabraSecreta)
+
+
+# -------------------------
+# Programa principal
+# -------------------------
+
+listadoPalabras = cargarPalabras()
+
+palabraSecreta = elegirPalabra(listadoPalabras)
+
+ahorcado(palabraSecreta)
+# Programa principal
+
+listadoPalabras = cargarPalabras()
+
+palabraSecreta = elegirPalabra(listadoPalabras)
+
+ahorcado(palabraSecreta)
+
     # Sugerencias:
     # - Usá un conjunto/lista para letrasMencionadas
     # - Llevá un contador de intentos restantes (inicialmente 8)
