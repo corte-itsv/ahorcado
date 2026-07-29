@@ -147,6 +147,16 @@ def obtenLetrasDisponibles(letrasMencionadas):
     '''
     # Sugerencia: empezá del alfabeto 'abcdefghijklmnopqrstuvwxyz' y remové las ya usadas.
 
+    abecedario = "abcdefghijklmnñopqrstuvwxyz"
+    disponibles = ""
+
+    for letra in abecedario:
+
+        if letra not in letrasMencionadas:
+            disponibles += letra
+
+    return disponibles
+
 
 def obtenerLetra(letrasMencionadas):
     """
@@ -159,6 +169,23 @@ def obtenerLetra(letrasMencionadas):
     retorna: string nueva letra ingresada por el usuario, en minúsculas
     """
 
+    abecedario = "abcdefghijklmnñopqrstuvwxyz"
+
+    while True:
+
+        letra = input("Ingresá una letra: ").lower()
+
+        if len(letra) != 1:
+            print("Ingresá una sola letra.")
+
+        elif letra not in abecedario:
+            print("Ingresá una letra válida.")
+
+        elif letra in letrasMencionadas:
+            print("Esa letra ya fue ingresada.")
+
+        else:
+            return letra
 
 def ahorcado(palabraSecreta):
     '''
