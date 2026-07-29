@@ -49,6 +49,7 @@
 import random
 
 
+
 def elegirPalabra(listadoPalabras):
     """
     listadoPalabras (list): lista de palabras (strings)
@@ -56,6 +57,8 @@ def elegirPalabra(listadoPalabras):
     Devuelve una palabra elegida al azar del listado.
     """
     #Sugerencia! ver: https://www.w3schools.com/python/module_random.asp
+    palabraSecreta = random.choice(listadoPalabras)
+    return palabraSecreta
 
 
 def cargarPalabras():
@@ -65,6 +68,11 @@ def cargarPalabras():
     Dependiendo del tamaño de la lista, esta función puede tardar un poco.
     """
     #Sugerencia! ver: https://www.w3schools.com/python/ref_func_open.asp
+    
+    archivo = open("palabras.txt", "r")
+    listadoPalabras = archivo.read().splitlines()
+    archivo.close()
+    return listadoPalabras
 
 
 def esPalabraAdivinada(palabraSecreta, letrasMencionadas):
@@ -74,6 +82,12 @@ def esPalabraAdivinada(palabraSecreta, letrasMencionadas):
     retorna: booleano, True si todas las letras de palabraSecreta están en letrasMencionadas;
              False en caso contrario
     '''
+
+    for letra in palabraSecreta:
+        if letra not in letrasMencionadas:
+            return False
+
+    return True
 
 
 def obtenPalabraAdivinada(palabraSecreta, letrasMencionadas):
@@ -85,7 +99,15 @@ def obtenPalabraAdivinada(palabraSecreta, letrasMencionadas):
              Ej.: 'a_ _ le' para 'apple' si solo se adivinó 'a' y 'l' y 'e'.
     '''
     # Sugerencia: construí un string acumulando letra o '_' según corresponda.
+    palabraAdivinada = ""
 
+    for letra in palabraSecreta:
+        if letra in letrasMencionadas:
+            palabraAdivinada += letra + " "
+        else:
+            palabraAdivinada += "_ "
+
+    return palabraAdivinada
 
 
 def obtenLetrasDisponibles(letrasMencionadas):
@@ -94,7 +116,14 @@ def obtenLetrasDisponibles(letrasMencionadas):
     retorna: string, con las letras (a..z) que aún NO se han intentado.
     '''
     # Sugerencia: empezá del alfabeto 'abcdefghijklmnopqrstuvwxyz' y remové las ya usadas.
+    abecedario = "abcdefghijklmnopqrstuvwxyz"
+    letrasDisponibles = ""
 
+    for letra in abecedario:
+        if letra not in letrasMencionadas:
+            letrasDisponibles += letra
+
+    return letrasDisponibles
 
 def obtenerLetra(letrasMencionadas):
     """
@@ -106,6 +135,24 @@ def obtenerLetra(letrasMencionadas):
     letrasMencionadas: list, letras ya intentadas
     retorna: string nueva letra ingresada por el usuario, en minúsculas
     """
+    abecedario = "abcdefghijklmnñopqrstuvwxyz"
+
+    letra = input("Ingrese una letra: ").lower()
+
+    while len(letra) != 1 or letra not in abecedario or letra in letrasMencionadas:
+
+        if len(letra) != 1:
+            print("Debe ingresar una sola letra.")
+
+        elif letra in letrasMencionadas:
+            print("Ya ingresaste esa letra.")
+
+        else:
+            print("Ingresá una letra válida.")
+
+        letra = input("Ingrese una letra: ").lower()
+
+    return letra
 
 
 def ahorcado(palabraSecreta):
