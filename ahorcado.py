@@ -48,6 +48,17 @@
 
 import random
 
+def simplificar(txt):
+    simplificaciones = {
+        "á": "a",
+        "é": "e",
+        "í": "i",
+        "ó": "o",
+        "ú": "u"
+    }
+    for og, simp in simplificaciones.items():
+        txt=txt.replace(og, simp)
+    return txt
 
 def elegirPalabra(listadoPalabras):
     """
@@ -56,6 +67,9 @@ def elegirPalabra(listadoPalabras):
     Devuelve una palabra elegida al azar del listado.
     """
     #Sugerencia! ver: https://www.w3schools.com/python/module_random.asp
+
+    palabra_rand = random.choice(listadoPalabras)
+    return simplificar(palabra_rand)
 
 
 def cargarPalabras():
@@ -66,6 +80,10 @@ def cargarPalabras():
     """
     #Sugerencia! ver: https://www.w3schools.com/python/ref_func_open.asp
 
+    list_palabras = open("palabras.txt", "r")
+    palabras = list_palabras.read().split()
+    return palabras
+
 
 def esPalabraAdivinada(palabraSecreta, letrasMencionadas):
     '''
@@ -74,7 +92,10 @@ def esPalabraAdivinada(palabraSecreta, letrasMencionadas):
     retorna: booleano, True si todas las letras de palabraSecreta están en letrasMencionadas;
              False en caso contrario
     '''
-
+    for letra in palabraSecreta:
+        if letra not in letrasMencionadas:
+            return False
+    return True
 
 def obtenPalabraAdivinada(palabraSecreta, letrasMencionadas):
     '''
@@ -86,6 +107,9 @@ def obtenPalabraAdivinada(palabraSecreta, letrasMencionadas):
     '''
     # Sugerencia: construí un string acumulando letra o '_' según corresponda.
 
+    progreso = [letra if letra in letrasMencionadas else '_' for letra in palabraSecreta]
+
+    print(" ".join(progreso))
 
 
 def obtenLetrasDisponibles(letrasMencionadas):
@@ -95,6 +119,11 @@ def obtenLetrasDisponibles(letrasMencionadas):
     '''
     # Sugerencia: empezá del alfabeto 'abcdefghijklmnopqrstuvwxyz' y remové las ya usadas.
 
+    alfabet = "abcdefghijklmnñopqrstuvwxyz"
+    for letra in letrasMencionadas:
+        alfabet = alfabet.replace(letra, "")
+
+    return alfabet
 
 def obtenerLetra(letrasMencionadas):
     """
@@ -107,6 +136,16 @@ def obtenerLetra(letrasMencionadas):
     retorna: string nueva letra ingresada por el usuario, en minúsculas
     """
 
+    while True:
+        letra = input("Ingrese su letra: ").lower()
+        if len(letra) != 1 or not letra.isalpha():
+            print("Ingrese una letra válida.")
+        elif letra in letrasMencionadas:
+            print("Letra ya mencionada, intente otra vez.")
+        else:
+            break
+    
+    return letra
 
 def ahorcado(palabraSecreta):
     '''
@@ -127,6 +166,42 @@ def ahorcado(palabraSecreta):
     descontar por letras repetidas, terminar al adivinar toda la palabra o al
     quedarse sin intentos; si pierde, mostrar la palabra).
     '''
+    letrasMencionadas = []
+    intentos = 8
+
+    print(f"La palabra tiene {len(palabraSecreta)} letras de largo.")
+    print(f"Tienes 8 intentos.")
+    print(f"Letras disponibles: 'abcdefghijklmnñopqrstuvwxyz'.")
+
+    obtenPalabraAdivinada(palabraSecreta, letrasMencionadas)
+
+    while esPalabraAdivinada(palabraSecreta, letrasMencionadas) == False:
+        if intentos > 0:
+            letra = obtenerLetra(letrasMencionadas)
+            letrasMencionadas.append(letra)
+            if letra in palabraSecreta:
+                print(f"La letra '{letra}' forma parte de la palabra.")
+            else:
+                print(f"La letra '{letra}' no forma parte de la palabra.")
+                intentos = intentos - 1
+            print(f"Intentos restantes: {intentos}")
+        else:
+            break
+
+        print(f"Letras disponibles: '{obtenLetrasDisponibles(letrasMencionadas)}'")
+        
+        obtenPalabraAdivinada(palabraSecreta, letrasMencionadas)
+
+    if esPalabraAdivinada(palabraSecreta, letrasMencionadas):
+        print(f"¡Ganaste! La palabra es '{palabraSecreta}'!")
+    else:
+        print(f"Te quedaste sin intentos. La palabra era '{palabraSecreta}'.")
+
+        
+        
+
+
+
     # Sugerencias:
     # - Usá un conjunto/lista para letrasMencionadas
     # - Llevá un contador de intentos restantes (inicialmente 8)
@@ -141,13 +216,16 @@ def ahorcado(palabraSecreta):
 # Cargamos la lista de palabras en la variable 'listadoPalabras'
 # para que esté disponible en todo el programa
 
-# listadoPalabras = cargarPalabras()
+listadoPalabras = cargarPalabras()
 
 # Cuando termines tu función ahorcado, descomentá estas dos líneas para probar
 # (pista: mientras probás, podés elegir vos la palabra secreta)
 
-# palabraSecreta = elegirPalabra(listadoPalabras)
-# ahorcado(palabraSecreta)
+palabraSecreta = elegirPalabra(listadoPalabras)
+
+ahorcado(palabraSecreta)
+
+
 
 
 
