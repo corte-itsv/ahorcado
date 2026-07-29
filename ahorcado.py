@@ -123,7 +123,7 @@ def obtenLetrasDisponibles(letrasMencionadas):
     for letra in letrasMencionadas:
         alfabet = alfabet.replace(letra, "")
 
-    print(alfabet)
+    return alfabet
 
 def obtenerLetra(letrasMencionadas):
     """
@@ -187,8 +187,9 @@ def ahorcado(palabraSecreta):
             print(f"Intentos restantes: {intentos}")
         else:
             break
- 
-        obtenLetrasDisponibles(letrasMencionadas)
+
+        print(f"Letras disponibles: '{obtenLetrasDisponibles(letrasMencionadas)}'")
+        
         obtenPalabraAdivinada(palabraSecreta, letrasMencionadas)
 
     if esPalabraAdivinada(palabraSecreta, letrasMencionadas):
