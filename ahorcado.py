@@ -212,6 +212,55 @@ def ahorcado(palabraSecreta):
     # - En cada vuelta: mostrar letras disponibles, pedir input, validar que sea 1 letra a-z,
     #   manejar repetidos, actualizar estado, y chequear victoria/derrota.
 
+    palabra = ""
+
+    for letra in palabraSecreta.lower():
+
+        if letra == "á":
+            palabra += "a"
+        elif letra == "é":
+            palabra += "e"
+        elif letra == "í":
+            palabra += "i"
+        elif letra == "ó":
+            palabra += "o"
+        elif letra == "ú":
+            palabra += "u"
+        elif letra == "ü":
+            palabra += "u"
+        else:
+            palabra += letra
+
+    letrasMencionadas = []
+    intentos = 8
+
+    print("¡Bienvenido al Ahorcado!")
+    print("La palabra tiene", len(palabraSecreta), "letras.")
+
+    while intentos > 0 and not esPalabraAdivinada(palabraSecreta, letrasMencionadas):
+
+        print("--------------------------------")
+        print("Intentos restantes:", intentos)
+        print("Letras disponibles:", obtenLetrasDisponibles(letrasMencionadas))
+        print("Palabra:", obtenPalabraAdivinada(palabraSecreta, letrasMencionadas))
+
+        letra = obtenerLetra(letrasMencionadas)
+
+        letrasMencionadas.append(letra)
+
+        if letra in palabra:
+            print("¡Correcto! La letra está en la palabra.")
+        else:
+            print("La letra no está en la palabra.")
+            intentos -= 1
+
+    print("--------------------------------")
+
+    if esPalabraAdivinada(palabraSecreta, letrasMencionadas):
+        print("¡Felicitaciones! Adivinaste la palabra:", palabraSecreta)
+    else:
+        print("Perdiste.")
+        print("La palabra era:", palabraSecreta)
 
 
 
@@ -220,13 +269,13 @@ def ahorcado(palabraSecreta):
 # Cargamos la lista de palabras en la variable 'listadoPalabras'
 # para que esté disponible en todo el programa
 
-# listadoPalabras = cargarPalabras()
+listadoPalabras = cargarPalabras()
 
 # Cuando termines tu función ahorcado, descomentá estas dos líneas para probar
 # (pista: mientras probás, podés elegir vos la palabra secreta)
 
-# palabraSecreta = elegirPalabra(listadoPalabras)
-# ahorcado(palabraSecreta)
+palabraSecreta = elegirPalabra(listadoPalabras)
+ahorcado(palabraSecreta)
 
 
 
