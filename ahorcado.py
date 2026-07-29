@@ -84,7 +84,7 @@ def esPalabraAdivinada(palabraSecreta, letrasMencionadas):
     '''
 
     for letra in palabraSecreta:
-        if letra not in letrasMencionadas:
+        if quitarTildes(letra) not in letrasMencionadas:
             return False
 
     return True
@@ -102,7 +102,7 @@ def obtenPalabraAdivinada(palabraSecreta, letrasMencionadas):
     palabraAdivinada = ""
 
     for letra in palabraSecreta:
-        if letra in letrasMencionadas:
+        if quitarTildes(letra) in letrasMencionadas:
             palabraAdivinada += letra + " "
         else:
             palabraAdivinada += "_ "
@@ -138,6 +138,7 @@ def obtenerLetra(letrasMencionadas):
     abecedario = "abcdefghijklmnñopqrstuvwxyz"
 
     letra = input("Ingrese una letra: ").lower()
+    letra = quitarTildes(letra)
 
     while len(letra) != 1 or letra not in abecedario or letra in letrasMencionadas:
 
@@ -151,9 +152,20 @@ def obtenerLetra(letrasMencionadas):
             print("Ingresá una letra válida.")
 
         letra = input("Ingrese una letra: ").lower()
+        letra = quitarTildes(letra)
 
     return letra
 
+def quitarTildes(letra):
+
+    letra = letra.replace("á", "a")
+    letra = letra.replace("é", "e")
+    letra = letra.replace("í", "i")
+    letra = letra.replace("ó", "o")
+    letra = letra.replace("ú", "u")
+    letra = letra.replace("ü", "u")
+
+    return letra
 
 def ahorcado(palabraSecreta):
     '''
@@ -195,11 +207,17 @@ def ahorcado(palabraSecreta):
 
         letrasMencionadas.append(letra)
 
-        if letra in palabraSecreta:
-            print("¡Bien! La letra está en la palabra.")
-        else:
-            print("Esa letra no está en la palabra.")
-            intentos -= 1
+        acerto = False
+
+    for letraPalabra in palabraSecreta:
+        if quitarTildes(letraPalabra) == letra:
+            acerto = True
+            break
+    if acerto:
+        print("¡Bien! La letra está en la palabra.")
+    else:
+        print("Esa letra no está en la palabra.")
+        intentos -= 1
 
     if esPalabraAdivinada(palabraSecreta, letrasMencionadas):
         print("¡Felicitaciones! Adivinaste la palabra:", palabraSecreta)
