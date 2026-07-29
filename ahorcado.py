@@ -59,6 +59,7 @@ def elegirPalabra(listadoPalabras):
 
     return random.choice(listadoPalabras)
 
+
 def cargarPalabras():
     """
     Devuelve una lista de palabras válidas. Las palabras son cadenas en minúsculas.
@@ -69,7 +70,9 @@ def cargarPalabras():
 
     archivo = open("palabras.txt", "r", encoding="utf-8")
     palabras = archivo.read().split()
+    archivo.close()
     return palabras
+
 
 def esPalabraAdivinada(palabraSecreta, letrasMencionadas):
     '''
@@ -78,6 +81,7 @@ def esPalabraAdivinada(palabraSecreta, letrasMencionadas):
     retorna: booleano, True si todas las letras de palabraSecreta están en letrasMencionadas;
              False en caso contrario
     '''
+
     palabra = ""
 
     for letra in palabraSecreta.lower():
@@ -133,11 +137,17 @@ def obtenPalabraAdivinada(palabraSecreta, letrasMencionadas):
         else:
             palabra += letra
 
-    for letra in palabra:
-        if letra not in letrasMencionadas:
-            return False
+    resultado = ""
 
-    return True
+    for i in range(len(palabra)):
+
+        if palabra[i] in letrasMencionadas:
+            resultado += palabraSecreta[i]
+
+        else:
+            resultado += "_ "
+
+    return resultado
 
 
 def obtenLetrasDisponibles(letrasMencionadas):
@@ -186,6 +196,7 @@ def obtenerLetra(letrasMencionadas):
 
         else:
             return letra
+
 
 def ahorcado(palabraSecreta):
     '''
@@ -261,6 +272,7 @@ def ahorcado(palabraSecreta):
     else:
         print("Perdiste.")
         print("La palabra era:", palabraSecreta)
+
 
 
 
