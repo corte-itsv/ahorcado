@@ -56,7 +56,7 @@ def elegirPalabra(listadoPalabras):
     Devuelve una palabra elegida al azar del listado.
     """
     #Sugerencia! ver: https://www.w3schools.com/python/module_random.asp
-
+    a
 
 def cargarPalabras():
     """
