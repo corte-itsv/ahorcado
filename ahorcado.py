@@ -116,7 +116,7 @@ def obtenLetrasDisponibles(letrasMencionadas):
     retorna: string, con las letras (a..z) que aún NO se han intentado.
     '''
     # Sugerencia: empezá del alfabeto 'abcdefghijklmnopqrstuvwxyz' y remové las ya usadas.
-    abecedario = "abcdefghijklmnopqrstuvwxyz"
+    abecedario = "abcdefghijklmnñopqrstuvwxyz"
     letrasDisponibles = ""
 
     for letra in abecedario:
@@ -209,15 +209,16 @@ def ahorcado(palabraSecreta):
 
         acerto = False
 
-    for letraPalabra in palabraSecreta:
-        if quitarTildes(letraPalabra) == letra:
-            acerto = True
-            break
-    if acerto:
-        print("¡Bien! La letra está en la palabra.")
-    else:
-        print("Esa letra no está en la palabra.")
-        intentos -= 1
+        for letraPalabra in palabraSecreta:
+            if quitarTildes(letraPalabra) == letra:
+                acerto = True
+                break
+
+        if acerto:
+            print("¡Bien! La letra está en la palabra.")
+        else:
+            print("Esa letra no está en la palabra.")
+            intentos -= 1
 
     if esPalabraAdivinada(palabraSecreta, letrasMencionadas):
         print("¡Felicitaciones! Adivinaste la palabra:", palabraSecreta)
