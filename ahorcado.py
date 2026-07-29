@@ -78,6 +78,30 @@ def esPalabraAdivinada(palabraSecreta, letrasMencionadas):
     retorna: booleano, True si todas las letras de palabraSecreta están en letrasMencionadas;
              False en caso contrario
     '''
+    palabra = ""
+
+    for letra in palabraSecreta.lower():
+
+        if letra == "á":
+            palabra += "a"
+        elif letra == "é":
+            palabra += "e"
+        elif letra == "í":
+            palabra += "i"
+        elif letra == "ó":
+            palabra += "o"
+        elif letra == "ú":
+            palabra += "u"
+        elif letra == "ü":
+            palabra += "u"
+        else:
+            palabra += letra
+
+    for letra in palabra:
+        if letra not in letrasMencionadas:
+            return False
+
+    return True
 
 
 def obtenPalabraAdivinada(palabraSecreta, letrasMencionadas):
@@ -90,6 +114,30 @@ def obtenPalabraAdivinada(palabraSecreta, letrasMencionadas):
     '''
     # Sugerencia: construí un string acumulando letra o '_' según corresponda.
 
+    palabra = ""
+
+    for letra in palabraSecreta.lower():
+
+        if letra == "á":
+            palabra += "a"
+        elif letra == "é":
+            palabra += "e"
+        elif letra == "í":
+            palabra += "i"
+        elif letra == "ó":
+            palabra += "o"
+        elif letra == "ú":
+            palabra += "u"
+        elif letra == "ü":
+            palabra += "u"
+        else:
+            palabra += letra
+
+    for letra in palabra:
+        if letra not in letrasMencionadas:
+            return False
+
+    return True
 
 
 def obtenLetrasDisponibles(letrasMencionadas):
