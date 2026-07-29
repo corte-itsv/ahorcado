@@ -78,6 +78,25 @@ def cargarPalabras():
 
 
 
+def normalizarCaracter(caracter):
+    equivalencias = {
+        "á": "a",
+        "é": "e",
+        "í": "i",
+        "ó": "o",
+        "ú": "u",
+        "ü": "u",
+        "Á": "a",
+        "É": "e",
+        "Í": "i",
+        "Ó": "o",
+        "Ú": "u",
+        "Ü": "u"
+    }
+
+    return equivalencias.get(caracter.lower(), caracter.lower())
+
+
 
 def esPalabraAdivinada(palabraSecreta, letrasMencionadas):
     '''
@@ -87,7 +106,7 @@ def esPalabraAdivinada(palabraSecreta, letrasMencionadas):
              False en caso contrario
     '''
     for letra in palabraSecreta:
-        if letra not in letrasMencionadas:
+        if normalizarCaracter(letra) not in letrasMencionadas:
             return False
     return True
 
@@ -104,7 +123,7 @@ def obtenPalabraAdivinada(palabraSecreta, letrasMencionadas):
     
     palabra = ""
     for letra in palabraSecreta:
-        if letra in letrasMencionadas:
+        if normalizarCaracter(letra) in letrasMencionadas:
             palabra = palabra + letra
         else:
             palabra = palabra + "_"
@@ -210,7 +229,7 @@ def ahorcado(palabraSecreta):
 
         letrasMencionadas.append(letra)
 
-        if letra in palabraSecreta:
+        if normalizarCaracter(letra) in [normalizarCaracter(l) for l in palabraSecreta]:
             print('Bien la letra esta')
             
         else:
