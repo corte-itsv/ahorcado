@@ -56,7 +56,7 @@ def elegirPalabra(listadoPalabras):
     Devuelve una palabra elegida al azar del listado.
     """
     #Sugerencia! ver: https://www.w3schools.com/python/module_random.asp
-
+    return random.choice(listadoPalabras)
 
 def cargarPalabras():
     """
@@ -65,7 +65,10 @@ def cargarPalabras():
     Dependiendo del tamaño de la lista, esta función puede tardar un poco.
     """
     #Sugerencia! ver: https://www.w3schools.com/python/ref_func_open.asp
-
+    archivo = open("palabras.txt", "r", encoding="utf-8")
+    listadoPalabras = archivo.read().split()
+    archivo.close()
+    return listadoPalabras
 
 def esPalabraAdivinada(palabraSecreta, letrasMencionadas):
     '''
@@ -74,6 +77,10 @@ def esPalabraAdivinada(palabraSecreta, letrasMencionadas):
     retorna: booleano, True si todas las letras de palabraSecreta están en letrasMencionadas;
              False en caso contrario
     '''
+    for letra in palabraSecreta:
+        if letra not in letrasMencionadas:
+            return False
+    return True
 
 
 def obtenPalabraAdivinada(palabraSecreta, letrasMencionadas):
@@ -85,7 +92,15 @@ def obtenPalabraAdivinada(palabraSecreta, letrasMencionadas):
              Ej.: 'a_ _ le' para 'apple' si solo se adivinó 'a' y 'l' y 'e'.
     '''
     # Sugerencia: construí un string acumulando letra o '_' según corresponda.
+    resultado = ""
 
+    for letra in palabraSecreta:
+        if letra in letrasMencionadas:
+            resultado += letra
+        else:
+            resultado += "_ "
+
+    return resultado
 
 
 def obtenLetrasDisponibles(letrasMencionadas):
@@ -94,6 +109,14 @@ def obtenLetrasDisponibles(letrasMencionadas):
     retorna: string, con las letras (a..z) que aún NO se han intentado.
     '''
     # Sugerencia: empezá del alfabeto 'abcdefghijklmnopqrstuvwxyz' y remové las ya usadas.
+    alfabeto = "abcdefghijklmnñopqrstuvwxyz"
+    disponibles = ""
+
+    for letra in alfabeto:
+        if letra not in letrasMencionadas:
+            disponibles += letra
+
+    return disponibles
 
 
 def obtenerLetra(letrasMencionadas):
@@ -106,7 +129,15 @@ def obtenerLetra(letrasMencionadas):
     letrasMencionadas: list, letras ya intentadas
     retorna: string nueva letra ingresada por el usuario, en minúsculas
     """
+    while True:
+        letra = input("Ingresá una letra: ").lower()
 
+        if len(letra) != 1 or letra not in "abcdefghijklmnñopqrstuvwxyz":
+            print("Ingresá una sola letra válida.")
+        elif letra in letrasMencionadas:
+            print("Ya ingresaste esa letra.")
+        else:
+            return letra
 
 def ahorcado(palabraSecreta):
     '''
@@ -133,7 +164,119 @@ def ahorcado(palabraSecreta):
     # - En cada vuelta: mostrar letras disponibles, pedir input, validar que sea 1 letra a-z,
     #   manejar repetidos, actualizar estado, y chequear victoria/derrota.
 
+    
+    dibujos = [
+"""
+  +---+
+  |   |
+      |
+      |
+      |
+      |
+=========
+""",
+"""
+  +---+
+  |   |
+  O   |
+      |
+      |
+      |
+=========
+""",
+"""
+  +---+
+  |   |
+  O   |
+  |   |
+      |
+      |
+=========
+""",
+"""
+  +---+
+  |   |
+  O   |
+ /|   |
+      |
+      |
+=========
+""",
+"""
+  +---+
+  |   |
+  O   |
+ /|\\  |
+      |
+      |
+=========
+""",
+"""
+  +---+
+  |   |
+  O   |
+ /|\\  |
+ /    |
+      |
+=========
+""",
+"""
+  +---+
+  |   |
+  O   |
+ /|\\  |
+ / \\  |
+      |
+=========
+""",
+"""
+  +---+
+  |   |
+ [O]  |
+ /|\\  |
+ / \\  |
+      |
+=========
+""",
+"""
+  +---+
+  |   |
+ [O]  |
+ /|\\  |
+ / \\  |
+GAME OVER
+=========
+"""
+    ]
 
+    intentos = 8
+    letrasMencionadas = []
+
+    print("¡Bienvenido al Ahorcado!")
+    print("La palabra tiene", len(palabraSecreta), "letras.")
+    print(dibujos[0])
+
+    while intentos > 0 and not esPalabraAdivinada(palabraSecreta, letrasMencionadas):
+        print("--------------------")
+        print("Te quedan", intentos, "intentos.")
+        print("Letras disponibles:", obtenLetrasDisponibles(letrasMencionadas))
+
+        letra = obtenerLetra(letrasMencionadas)
+        letrasMencionadas.append(letra)
+
+        if letra in palabraSecreta:
+            print("¡Bien! La letra está en la palabra.")
+        else:
+            intentos -= 1
+            print("La letra no está en la palabra.")
+            print(dibujos[8 - intentos])
+
+        print(obtenPalabraAdivinada(palabraSecreta, letrasMencionadas))
+
+    if esPalabraAdivinada(palabraSecreta, letrasMencionadas):
+        print("¡Felicitaciones! Adivinaste la palabra:", palabraSecreta)
+    else:
+        print("Perdiste. La palabra era:", palabraSecreta)
 
 
 # Descomentar al completar las funciones:
@@ -148,7 +291,7 @@ def ahorcado(palabraSecreta):
 
 # palabraSecreta = elegirPalabra(listadoPalabras)
 # ahorcado(palabraSecreta)
-
-
-
+listadoPalabras = cargarPalabras()
+palabraSecreta = elegirPalabra(listadoPalabras)
+ahorcado(palabraSecreta)
 
