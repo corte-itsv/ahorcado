@@ -1,153 +1,255 @@
 #   Hangman / Ahorcado
-#
-#
-#   En este problema vas a programar una variación del clásico juego Ahorcado. Si no
-#   conoces las reglas, podes leer sobre ellas fácilmente. En nuestro caso, el segundo
-#   jugador siempre será la computadora, que elegirá una palabra al azar.
-#
-#   Vas a implementar una función llamada ahorcado (hangman en inglés) que inicia y
-#   lleva adelante un juego interactivo de Ahorcado entre un jugador y la computadora.
-#   Antes de llegar a esa función, implementaremos algunas funciones auxiliares para
-#   ponerte en marcha.
-#
-#   Para este ejercicio necesitas los archivos ps3_ahorcado.py y palabras.txt, los cuales
-#   podes descargar desde el classroom. Asegúrate de guardarlos en el mismo directorio
-#   donde vas a trabajar.
-#
-#   Requisitos:
-#       • La computadora debe seleccionar al azar una palabra de la lista cargada
-#         desde palabras.txt.
-#       • El juego debe ser interactivo y fluir así:
-#           - Al comenzar, indica al usuario cuántas letras tiene la palabra.
-#           - Pide una única letra por ronda.
-#           - Inmediatamente después de cada intento, informa si la letra está o no
-#             en la palabra.
-#           - Tras cada ronda, muestra el avance parcial (con guiones bajos en las
-#             letras no descubiertas) y las letras no usadas aún.
-#       • Reglas adicionales:
-#           - El usuario dispone de 8 intentos. Recuérdale cuántos le quedan
-#             después de cada ronda.
-#           - Solo se pierde un intento cuando la letra no está en la palabra.
-#           - Si el usuario repite una letra, no le quites un intento; en su lugar,
-#             avísale y pídele otra.
-#           - El juego termina cuando el usuario adivina toda la palabra o se queda
-#             sin intentos. Si pierde, revela la palabra al final.
-#       • Consideraciones:
-#           - Las letras disponibles deben ser: 'abcdefghijklmnñopqrstuvwxyz'
-#           - El programa no debe diferenciar entre minúsculas y mayúsculas, es decir,
-#             es lo mismo si el usuario ingresa 'U' o 'u'
-#           - Los caracetes especiales en las palabras en juego, como: á é í ó ú ü, deben
-#             ser consideradas como correctas cuando el usuario ingresa su caracter base,
-#             es decir, si hay una 'ü' en la palabra a adivinar, y el usuario ingresa 'u',
-#             debe considerarse como correcto.
-#       • Extra:
-#           - En lugar, o en complemento, de mostrar la cantidad de vidas restantes, dibujá
-#             el típico ahorcado a medida que el usuario vaya perdiendo vidas.
-#
-
 
 import random
+
+# --- DIBUJOS DEL AHORCADO (Extra) ---
+DIBUJOS_AHORCADO = [
+    # 8 vidas (0 errores)
+    """
+       +---+
+           |
+           |
+           |
+           |
+           |
+    =========
+    """,
+    # 7 vidas (1 error)
+    """
+       +---+
+       |   |
+           |
+           |
+           |
+           |
+    =========
+    """,
+    # 6 vidas (2 errores)
+    """
+       +---+
+       |   |
+       O   |
+           |
+           |
+           |
+    =========
+    """,
+    # 5 vidas (3 errores)
+    """
+       +---+
+       |   |
+       O   |
+       |   |
+           |
+           |
+    =========
+    """,
+    # 4 vidas (4 errores)
+    """
+       +---+
+       |   |
+       O   |
+      /|   |
+           |
+           |
+    =========
+    """,
+    # 3 vidas (5 errores)
+    """
+       +---+
+       |   |
+       O   |
+      /|\\  |
+           |
+           |
+    =========
+    """,
+    # 2 vidas (6 errores)
+    """
+       +---+
+       |   |
+       O   |
+      /|\\  |
+      /    |
+           |
+    =========
+    """,
+    # 1 vida (7 errores)
+    """
+       +---+
+       |   |
+       O   |
+      /|\\  |
+      / \\  |
+           |
+    =========
+    """,
+    # 0 vidas (8 errores - Perdiste)
+    """
+       +---+
+       |   |
+      (X)  |
+      /|\\  |
+      / \\  |
+           |
+    =========
+    """
+]
+
+def quitar_tildes(texto):
+    """
+    Función auxiliar para normalizar los caracteres especiales.
+    Convierte á->a, é->e, ü->u, etc.
+    """
+    reemplazos = {'á': 'a', 'é': 'e', 'í': 'i', 'ó': 'o', 'ú': 'u', 'ü': 'u'}
+    texto_normalizado = texto.lower()
+    for original, reemplazo in reemplazos.items():
+        texto_normalizado = texto_normalizado.replace(original, reemplazo)
+    return texto_normalizado
 
 
 def elegirPalabra(listadoPalabras):
     """
     listadoPalabras (list): lista de palabras (strings)
-
     Devuelve una palabra elegida al azar del listado.
     """
-    #Sugerencia! ver: https://www.w3schools.com/python/module_random.asp
+    return random.choice(listadoPalabras)
 
 
 def cargarPalabras():
     """
     Devuelve una lista de palabras válidas. Las palabras son cadenas en minúsculas.
-
-    Dependiendo del tamaño de la lista, esta función puede tardar un poco.
     """
-    #Sugerencia! ver: https://www.w3schools.com/python/ref_func_open.asp
+    print("Cargando lista de palabras desde el archivo...")
+    try:
+        with open('palabras.txt', 'r', encoding='utf-8') as archivo:
+            # Leemos todo el archivo y separamos por espacios/saltos de línea
+            listado = archivo.read().split()
+        print(f"¡Éxito! Se cargaron {len(listado)} palabras.")
+        return listado
+    except FileNotFoundError:
+        print("Error: No se encontró 'palabras.txt'. Asegurate de que esté en la misma carpeta.")
+        # Retorna una lista por defecto para que el programa no se rompa de la nada
+        return ["python", "ahorcado", "programacion", "computadora"]
 
 
 def esPalabraAdivinada(palabraSecreta, letrasMencionadas):
     '''
     palabraSecreta: string, la palabra que el usuario intenta adivinar
     letrasMencionadas: list, letras que ya fueron intentadas
-    retorna: booleano, True si todas las letras de palabraSecreta están en letrasMencionadas;
-             False en caso contrario
+    retorna: booleano, True si todas las letras de palabraSecreta están en letrasMencionadas
     '''
+    palabra_norm = quitar_tildes(palabraSecreta)
+    for letra in palabra_norm:
+        if letra not in letrasMencionadas:
+            return False
+    return True
 
 
 def obtenPalabraAdivinada(palabraSecreta, letrasMencionadas):
     '''
     palabraSecreta: string, la palabra que el usuario intenta adivinar
     letrasMencionadas: list, letras que ya fueron intentadas
-    retorna: string, con letras y guiones bajos que representan
-             el estado parcial de la palabra adivinada hasta ahora.
-             Ej.: 'a_ _ le' para 'apple' si solo se adivinó 'a' y 'l' y 'e'.
+    retorna: string, con letras y guiones bajos que representan el estado parcial
     '''
-    # Sugerencia: construí un string acumulando letra o '_' según corresponda.
-
+    resultado = ""
+    for letra in palabraSecreta:
+        # Evaluamos la letra sin tilde para ver si el usuario la adivinó
+        if quitar_tildes(letra) in letrasMencionadas:
+            resultado += letra + " "
+        else:
+            resultado += "_ "
+    return resultado.strip()
 
 
 def obtenLetrasDisponibles(letrasMencionadas):
     '''
     letrasMencionadas: list, letras ya intentadas
-    retorna: string, con las letras (a..z) que aún NO se han intentado.
+    retorna: string, con las letras (a..z + ñ) que aún NO se han intentado.
     '''
-    # Sugerencia: empezá del alfabeto 'abcdefghijklmnopqrstuvwxyz' y remové las ya usadas.
+    abecedario = "abcdefghijklmnñopqrstuvwxyz"
+    letras_restantes = ""
+    for letra in abecedario:
+        if letra not in letrasMencionadas:
+            letras_restantes += letra
+    return letras_restantes
 
 
 def obtenerLetra(letrasMencionadas):
     """
     Pide al usuario ingresar una nueva letra.
-    No distingue minúsculas de mayúsculas.
-    Valida que la letra no haya sido ingresada previamente.
-    letras válidas: abcdefghijklmnñopqrstuvwxyz
-
-    letrasMencionadas: list, letras ya intentadas
-    retorna: string nueva letra ingresada por el usuario, en minúsculas
+    No distingue minúsculas de mayúsculas ni tildes.
+    Valida que la letra no haya sido ingresada previamente sin descontar intentos.
     """
+    abecedario = "abcdefghijklmnñopqrstuvwxyz"
+    
+    while True:
+        ingreso = input("Ingresá una letra: ").lower()
+        letra = quitar_tildes(ingreso) # Por si el usuario le clava una tilde al input
+        
+        if len(letra) != 1 or letra not in abecedario:
+            print("❌ Por favor, ingresá una única letra válida (a-z o ñ).")
+        elif letra in letrasMencionadas:
+            print("⚠️ ¡Ya intentaste con esa letra! Probá con otra (no te descuento intentos).")
+        else:
+            return letra
 
 
 def ahorcado(palabraSecreta):
     '''
-    palabraSecreta: string, la palabra secreta a adivinar.
-
     Inicia un juego interactivo de Ahorcado.
-
-    * Al inicio, informá cuántas letras tiene palabraSecreta.
-
-    * Pedí al usuario una sola letra por ronda.
-
-    * Informá inmediatamente si su letra aparece o no en la palabra.
-
-    * Tras cada ronda, mostrale el estado parcial de la palabra,
-      y también las letras que aún no ha usado.
-
-    Seguí las demás limitaciones descriptas en el enunciado (8 intentos, no
-    descontar por letras repetidas, terminar al adivinar toda la palabra o al
-    quedarse sin intentos; si pierde, mostrar la palabra).
     '''
-    # Sugerencias:
-    # - Usá un conjunto/lista para letrasMencionadas
-    # - Llevá un contador de intentos restantes (inicialmente 8)
-    # - En cada vuelta: mostrar letras disponibles, pedir input, validar que sea 1 letra a-z,
-    #   manejar repetidos, actualizar estado, y chequear victoria/derrota.
+    vidas = 8
+    letrasMencionadas = []
+    palabra_norm = quitar_tildes(palabraSecreta) # Normalizamos la secreta para las comparaciones
+    
+    print("\n" + "="*40)
+    print("¡BIENVENIDO AL JUEGO DEL AHORCADO!")
+    print("="*40)
+    print(f"Estoy pensando en una palabra que tiene {len(palabraSecreta)} letras.")
+    
+    # Bucle principal del juego
+    while vidas > 0:
+        print("\n" + "-"*40)
+        print(DIBUJOS_AHORCADO[8 - vidas])
+        print(f"Te quedan {vidas} intentos.")
+        print(f"Letras disponibles: {obtenLetrasDisponibles(letrasMencionadas)}")
+        print(f"Palabra: {obtenPalabraAdivinada(palabraSecreta, letrasMencionadas)}")
+        
+        letra = obtenerLetra(letrasMencionadas)
+        letrasMencionadas.append(letra)
+        
+        if letra in palabra_norm:
+            print("\n✅ ¡Bien hecho! Esa letra está en mi palabra.")
+        else:
+            print("\n❌ ¡Oops! Esa letra no está en mi palabra.")
+            vidas -= 1
+            
+        # Comprobamos si ya adivinó toda la palabra
+        if esPalabraAdivinada(palabraSecreta, letrasMencionadas):
+            print("\n" + "="*40)
+            print("🎉 ¡FELICIDADES, GANASTE! 🎉")
+            print(f"Adivinaste la palabra: '{palabraSecreta.upper()}'")
+            print("="*40)
+            break
+            
+    # Si sale del while y las vidas son 0, perdió
+    if vidas == 0:
+        print("\n" + "-"*40)
+        print(DIBUJOS_AHORCADO[8])
+        print("💀 ¡TE QUEDASTE SIN INTENTOS, PERDISTE! 💀")
+        print(f"La palabra secreta era: '{palabraSecreta.upper()}'")
+        print("="*40)
 
 
+# --- EJECUCIÓN DEL JUEGO ---
 
+# Cargamos la lista de palabras
+listadoPalabras = cargarPalabras()
 
-# Descomentar al completar las funciones:
-
-# Cargamos la lista de palabras en la variable 'listadoPalabras'
-# para que esté disponible en todo el programa
-
-# listadoPalabras = cargarPalabras()
-
-# Cuando termines tu función ahorcado, descomentá estas dos líneas para probar
-# (pista: mientras probás, podés elegir vos la palabra secreta)
-
-# palabraSecreta = elegirPalabra(listadoPalabras)
-# ahorcado(palabraSecreta)
+# Elegimos una y arrancamos el juego
+palabraSecreta = elegirPalabra(listadoPalabras)
+ahorcado(palabraSecreta)
 
 
 
